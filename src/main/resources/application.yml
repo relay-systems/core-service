@@ -1,6 +1,12 @@
 spring:
   application:
     name: core-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/relay}
+    username: ${DB_USER:relay}
+    password: ${DB_PASSWORD:relay}
+  liquibase:
+    change-log: classpath:db/changelog/master.changelog.xml
 
 management:
   endpoints:
