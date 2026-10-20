@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: core-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
