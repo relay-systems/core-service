@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-/** Full Spring Boot startup (default Hikari DataSource) against a disposable postgres. */
 class LocalLiquibaseRecoveryStartupTest extends RecoverySupport {
 
     @BeforeEach
@@ -43,12 +42,20 @@ class LocalLiquibaseRecoveryStartupTest extends RecoverySupport {
     }
 
     ConfigurableApplicationContext start(boolean localProfile, boolean optIn, String url, String... extra) {
-        List<String> args = new ArrayList<>(List.of("--server.port=0", "--spring.main.banner-mode=off",
-                "--spring.datasource.url=" + url, "--spring.datasource.username=" + PG.getUsername(),
+        List<String> args = new ArrayList<>(List.of(
+                "--server.port=0",
+                "--spring.main.banner-mode=off",
+                "--spring.datasource.url=" + url,
+                "--spring.datasource.username=" + PG.getUsername(),
                 "--spring.datasource.password=" + PG.getPassword(),
-                "--spring.liquibase.change-log=file:" + changelog()));
-        if (localProfile) args.add("--spring.profiles.active=local");
-        if (optIn) args.add("--relay.liquibase.auto-recovery-enabled=true");
+                "--spring.liquibase.change-log=file:" + changelog(),
+                "--relay.liquibase.auto-recovery-enabled=" + optIn
+        ));
+
+        if (localProfile) {
+            args.add("--spring.profiles.active=local");
+        }
+
         args.addAll(List.of(extra));
         return SpringApplication.run(CoreServiceApplication.class, args.toArray(String[]::new));
     }
