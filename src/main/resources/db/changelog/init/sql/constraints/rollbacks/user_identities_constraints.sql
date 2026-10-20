@@ -1,0 +1,4 @@
+ALTER TABLE user_identities DROP CONSTRAINT user_identities_subject_check;
+ALTER TABLE user_identities DROP CONSTRAINT user_identities_issuer_check;
+ALTER TABLE user_identities DROP CONSTRAINT uq_user_identities_issuer_subject;
+ALTER TABLE user_identities DROP CONSTRAINT user_identities_user_id_fkey;

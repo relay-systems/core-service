@@ -3,4 +3,19 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"/>
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="init-users-schema" author="relay">
+        <sqlFile path="sql/tables/users.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/tables/user_identities.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/constraints/user_identities_constraints.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/indexes/user_identities_indexes.sql" relativeToChangelogFile="true"/>
+        <rollback>
+            <sqlFile path="sql/indexes/rollbacks/user_identities_indexes.sql" relativeToChangelogFile="true"/>
+            <sqlFile path="sql/constraints/rollbacks/user_identities_constraints.sql" relativeToChangelogFile="true"/>
+            <sqlFile path="sql/tables/rollbacks/user_identities.sql" relativeToChangelogFile="true"/>
+            <sqlFile path="sql/tables/rollbacks/users.sql" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

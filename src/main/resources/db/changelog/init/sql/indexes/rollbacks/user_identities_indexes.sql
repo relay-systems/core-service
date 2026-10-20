@@ -1,0 +1,1 @@
+DROP INDEX ix_user_identities_user_id;
