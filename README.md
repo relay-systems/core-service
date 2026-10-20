@@ -23,4 +23,4 @@ Liquibase changelogs live under `src/main/resources/db/changelog`. Rollback SQL 
 
 ## Branches
 
-`TASK_<feature>_<n>` -> `DEV_<feature>` -> `test` -> `main`, enforced by the `branch-policy` workflow.
+`TASK_<feature>_<n>` -> `test` -> `main`, both through pull requests, enforced by the `branch-policy` workflow. Feature branches are created from `test`.
