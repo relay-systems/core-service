@@ -1,0 +1,46 @@
+name: Branch Policy Validation
+
+on:
+  pull_request:
+    # edited fires when the PR's base branch is changed
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  branch-policy:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Validate branch hierarchy
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "Validating PR: $HEAD_REF -> $BASE_REF"
+
+          # Functional branch: DEV_<feature>, must not end with _<number>
+          functional='^DEV_[A-Za-z0-9_]+$'
+          numbered_suffix='_[0-9]+$'
+          # Task branch: TASK_<feature>_<positive integer>
+          working='^TASK_([A-Za-z0-9_]+)_[1-9][0-9]*$'
+
+          is_functional() { [[ "$1" =~ $functional ]] && ! [[ "$1" =~ $numbered_suffix ]]; }
+
+          # 1. TASK_<feature>_<number> -> DEV_<feature>
+          if [[ "$HEAD_REF" =~ $working ]] && [ "DEV_${BASH_REMATCH[1]}" = "$BASE_REF" ] && is_functional "$BASE_REF"; then
+            echo "✓ Valid: task -> functional"; exit 0
+          fi
+          # 2. DEV_<feature> -> test
+          if [ "$BASE_REF" = "test" ] && is_functional "$HEAD_REF"; then
+            echo "✓ Valid: functional -> test"; exit 0
+          fi
+          # 3. test -> main
+          if [ "$BASE_REF" = "main" ] && [ "$HEAD_REF" = "test" ]; then
+            echo "✓ Valid: test -> main"; exit 0
+          fi
+
+          echo "Error: Invalid branch hierarchy"
+          echo "Allowed:"
+          echo "  1. TASK_<feature>_<number> -> DEV_<feature>  (e.g. TASK_project_setup_1 -> DEV_project_setup)"
+          echo "  2. DEV_<feature> -> test"
+          echo "  3. test -> main"
+          exit 1

@@ -1,0 +1,21 @@
+# Maven / Java
+target/
+*.class
+hs_err_pid*
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Shared AI tooling (symlinks to ../ai, never committed)
+/CLAUDE.md
+/.claude
+/.serena/
+/graphify-out/

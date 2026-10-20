@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'DEV_*'
+  pull_request:
+    branches:
+      - 'DEV_*'
+      - 'test'
+      - 'main'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # Integration tests start disposable PostgreSQL containers via Testcontainers (Docker is available on ubuntu-latest).
+      - name: Test
+        run: ./mvnw -B test
