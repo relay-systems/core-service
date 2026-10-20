@@ -18,9 +18,9 @@ jobs:
           echo "Validating PR: $HEAD_REF -> $BASE_REF"
 
           # Task branch: TASK_<feature>_<positive integer>
-          task='^TASK_[A-Za-z0-9_]+_[1-9][0-9]*$'
+          task='^TASK_[a-z0-9]+(-[a-z0-9]+)*$'
 
-          # 1. TASK_<feature>_<number> -> test
+          # 1. TASK_* -> test
           if [ "$BASE_REF" = "test" ] && [[ "$HEAD_REF" =~ $task ]]; then
             echo "✓ Valid: task -> test"; exit 0
           fi
@@ -31,6 +31,6 @@ jobs:
 
           echo "Error: Invalid branch hierarchy"
           echo "Allowed:"
-          echo "  1. TASK_<feature>_<number> -> test  (e.g. TASK_users_1 -> test)"
+          echo "  1. TASK_* -> test  (e.g. TASK_users -> test)"
           echo "  2. test -> main"
           exit 1
